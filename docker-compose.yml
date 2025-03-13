@@ -1,0 +1,69 @@
+version: '1.0'
+
+services:
+  # Database service for data warehouse
+  postgresql:
+    image: 'bitnami/postgresql:latest'
+    environment:
+      - POSTGRESQL_USERNAME=user
+      - POSTGRESQL_PASSWORD=password
+      - POSTGRESQL_DATABASE=flights_dwh
+    ports:
+        - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data:/data
+    networks:
+      - data-network
+
+  # Spark master mode
+  spark-master:
+    image: 'bitnami/spark:latest'
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - '8080:8080'
+      - '7077:7077'
+    volumes:
+      - ./data:/data
+      - ./utils:/utils
+      - ./scripts/spark:/opt/spark/work
+    networks:
+      - data-network
+
+  # Spark worker mode
+  spark-worker:
+    image: 'bitnami/spark:latest'
+    container_name: spark-worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    depends_on:
+      - spark-master
+    volumes:
+      - ./data:/data
+      - ./scripts/spark:/opt/spark/work
+    networks:
+      - data-network
+
+  # dbt service
+  dbt:
+    build:
+      context: ./scripts/dbt
+      dockerfile: Dockerfile
+    container_name: dbt
+    volumes:
+      - ./data:/data
+      - ./scripts/dbt:/dbt
+    depends_on:
+      - postgresql
+    networks:
+      - data-network
+
+networks:
+  data-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
