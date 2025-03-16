@@ -1,0 +1,12 @@
+flight_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgresql
+      port: 5432
+      user: user
+      password: password
+      dbname: flights_dwh
+      schema: public
+      threads: 4
