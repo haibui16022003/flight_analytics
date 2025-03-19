@@ -53,12 +53,12 @@ def handle_null_values(df):
     return df
 
 
-def normalize_data(spark, file_name, schema=None):
+def normalize_data(spark, file_name, schema: dict):
     """Load and normalize flights data using the predefined schema."""
     # if spark is None:
     #     spark = create_spark_session("FlightsNormalizer")
-
-    df = load_csv(spark, file_name)
+    data_path = "/opt/data/"
+    df = load_csv(spark, data_path, file_name)
 
     for column, data_type in schema.items():
         df = df.withColumn(column, col(column).cast(data_type))

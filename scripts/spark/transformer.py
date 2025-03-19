@@ -1,4 +1,4 @@
-from pyspark.sql.functions import col, to_date, concat_ws, sha2, date_format, lit, when
+from pyspark.sql.functions import col, to_date, concat_ws, sha2, date_format, lit, when, dayofweek
 
 from normarlizer import load_csv
 
@@ -18,8 +18,8 @@ def transform_flight_data(spark, flights_df):
         airport_df = load_csv(spark, data_path, "airports.csv")
         airport_df = airport_df.filter(col("iata_code").isNotNull())
         df = airport_df.select(
-            col("iata_code").cast("str").alias("airport_code"),
-            col("name").cast("str").alias("airport_name"),
+            col("iata_code").cast("string").alias("airport_code"),
+            col("name").cast("string").alias("airport_name"),
         )
         return df.distinct()
 
@@ -38,10 +38,10 @@ def transform_flight_data(spark, flights_df):
         df = df.withColumn("day_of_week", date_format(col("date"), "EEEE"))
         df = df.withColumn("day_of_month", col("day"))
         df = df.withColumn("day_of_year", date_format(col("date"), "D"))
-        df = df.withColumn("week_of_year", date_format(col("date"), "w"))
+        # Updated pattern for week of year
         df = df.withColumn("month_name", date_format(col("date"), "MMMM"))
         df = df.withColumn("quarter", date_format(col("date"), "Q"))
-        df = df.withColumn("is_weekend", when(date_format(col("date"), "u").isin("6", "7"), True).otherwise(False))
+        df = df.withColumn("is_weekend", when(dayofweek(col("date")).isin(1, 7), True).otherwise(False))
 
         return df
 

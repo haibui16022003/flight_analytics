@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 
 from normarlizer import normalize_data, print_schema_info
+from df_schema import *
 from transformer import *
 
 DATA_PATH = "/opt/data/"
@@ -53,12 +54,13 @@ def load_flights_data(spark, df_names):
 
 if __name__ == "__main__":
     spark = create_spark_session("FlightsLoader")
-    flights_df = normalize_data(spark, "flight_data.csv")
+    flights_df = normalize_data(spark, "flight_data.csv", FLIGHTS_SCHEMA)
     print_schema_info(flights_df, show_sample=True)
 
     # Load data into PostgreSQL
-    load_flights_data(spark, flights_df)
-
+    # load_flights_data(spark, flights_df)
+    list_df = transform_flight_data(spark, flights_df)
+    print_schema_info(list_df[5], show_sample=True)
     # Stop the SparkSession
     spark.stop()
 
