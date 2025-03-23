@@ -28,7 +28,7 @@ def load_flights_data(spark, df_names):
     }
 
     # Postgre configuration
-    jdbc_url = "jdbc:postgresql://localhost:5432/flights_dwh"
+    jdbc_url = "jdbc:postgresql://flight_analytics-postgresql-1:5432/flights_dwh"
     db_properties = {
         "user": "user",
         "password": "password",
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     print_schema_info(flights_df, show_sample=True)
 
     # Load data into PostgreSQL
-    # load_flights_data(spark, flights_df)
+    load_flights_data(spark, flights_df)
     list_df = transform_flight_data(spark, flights_df)
     print_schema_info(list_df[5], show_sample=True)
     # Stop the SparkSession
