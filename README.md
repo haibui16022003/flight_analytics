@@ -15,7 +15,8 @@ It uses a combination of PostgreSQL for data storage, dbt for data transformatio
 ├── test/                   # Test files
 ├── utils/                  # Utility functions
 ├── docker-compose.yml      # Docker environment configuration
-└── README.md               # This documentation
+├── README.md               # This documentation
+└── profiles.yml            # dbt profile configuration
 ```
 
 ## Prerequisites

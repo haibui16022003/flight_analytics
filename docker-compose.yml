@@ -1,9 +1,12 @@
-version: '1.1'
+version: '1.2'
 
 services:
   # Database service for data warehouse
   postgresql:
-    image: 'bitnami/postgresql:latest'
+    build:
+      context: ./setup/dbt
+      dockerfile: Dockerfile
+    container_name: postgresql
     environment:
       - POSTGRESQL_USER=user
       - POSTGRESQL_PASSWORD=password
@@ -13,8 +16,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./data:/data
+      - ./scripts/dbt:/opt/dbt
     networks:
       - data-network
+
 
   # Spark master mode
   spark-master:
@@ -46,21 +51,6 @@ services:
     volumes:
       - ./data:/opt/data
       - ./scripts/spark:/opt/spark/work
-    networks:
-      - data-network
-
-  # dbt service
-  dbt:
-    build:
-      context: ./setup/dbt
-      dockerfile: Dockerfile
-    container_name: dbt
-    volumes:
-      - ./data:/data
-      - ./setup:/setup
-      - ./scripts/dbt:/dbt
-    depends_on:
-      - postgresql
     networks:
       - data-network
 

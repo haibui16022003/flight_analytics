@@ -20,6 +20,8 @@ def transform_flight_data(spark, flights_df):
         df = airport_df.select(
             col("iata_code").cast("string").alias("airport_code"),
             col("name").cast("string").alias("airport_name"),
+            col("iso_country").cast("string").alias("country"),
+            col("municipality").cast("string").alias("city")
         )
         return df.distinct()
 
@@ -117,3 +119,23 @@ def transform_flight_data(spark, flights_df):
 
     # Return dictionary of all dimensional tables
     return dim_carrier, dim_airport, dim_date, dim_route, dim_time, fact_flights
+
+def transform_flight_delay(spark, delays_df):
+    """Transform the delay reasons."""
+    df = delays_df.select(
+        col("year"),
+        col("month"),
+        col("carrier").alias("carrier_code"),
+        col("airport").alias("airport_code"),
+        col("arr_flights").alias("total_arrivals"),
+        col("arr_del15").alias("total_delays"),
+        col("carrier_ct").alias("carrier_cause_delay"),
+        col("weather_ct").alias("weather_cause_delay"),
+        col("nas_ct").alias("nas_cause_delay"),
+        col("security_ct").alias("security_cause_delay"),
+        col("late_aircraft_ct").alias("late_aircraft_cause_delay"),
+        col("arr_cancelled").alias("total_cancellations"),
+        col("arr_diverted").alias("total_diversions"),
+    )
+
+    return df
