@@ -74,12 +74,12 @@ def load_delays_data(spark, delays_df):
 if __name__ == "__main__":
     spark = create_spark_session("FlightsLoader")
 
-    # # Load and normalize flights data
+    # Normalize and load flights data
     flights_df = normalize_data(spark, "flight_data.csv", FLIGHTS_SCHEMA)
     print_schema_info(flights_df, show_sample=True)
     load_flights_data(spark, flights_df)
 
-    # Normalize delays data
+    # Normalize and load delays data
     delays_df = normalize_data(spark, "delay_cause.csv", DELAYS_SCHEMA)
     print_schema_info(delays_df, show_sample=True)
     load_delays_data(spark, delays_df)
