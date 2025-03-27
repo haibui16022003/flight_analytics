@@ -2,6 +2,7 @@ from pyspark.sql import SparkSession
 
 from normarlizer import normalize_data, print_schema_info
 from df_schema import *
+from report_delay_reasons import generate_delay_report
 from transformer import *
 
 POSTGRES_JAR = "/opt/spark/jars/postgresql-42.2.23.jar"
@@ -83,6 +84,9 @@ if __name__ == "__main__":
     delays_df = normalize_data(spark, "delay_cause.csv", DELAYS_SCHEMA)
     print_schema_info(delays_df, show_sample=True)
     load_delays_data(spark, delays_df)
+
+    # report delay cause
+    generate_delay_report(spark)
 
     # Stop the SparkSession
     spark.stop()
