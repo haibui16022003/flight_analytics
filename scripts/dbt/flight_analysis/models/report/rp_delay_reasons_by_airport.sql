@@ -14,8 +14,8 @@ WITH
             SUM(dr.nas_cause_delay) AS total_nas_delays,
             SUM(dr.security_cause_delay) AS total_security_delays,
             SUM(dr.late_aircraft_cause_delay) AS total_late_aircraft_delays
-        FROM {{ ref('delay_reasons') }} dr
-        JOIN {{ ref('dim_airport') }} a ON dr.airport_code = a.airport_code
+        FROM public.delay_reasons dr
+        JOIN public.dim_airport a ON dr.airport_code = a.airport_code
         GROUP BY dr.airport_code, a.airport_name
     )
 
