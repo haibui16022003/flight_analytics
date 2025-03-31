@@ -81,6 +81,7 @@ if __name__ == "__main__":
 
     # Normalize and load delays data
     delays_df = normalize_data(spark, "delay_cause.csv", DELAYS_SCHEMA)
+    delays_df = transform_flight_delay(spark, delays_df)
     print_schema_info(delays_df, show_sample=True)
     load_delays_data(spark, delays_df)
 
