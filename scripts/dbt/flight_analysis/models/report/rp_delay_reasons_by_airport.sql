@@ -3,29 +3,24 @@ WITH
     AS
     (
         SELECT
-            airport,
-            airport_name,
-            SUM(arr_flights) AS total_flights,
-            SUM(arr_del15) AS total_delayed_flights,
-            SUM(arr_cancelled) AS total_cancelled_flights,
-            SUM(arr_diverted) AS total_diverted_flights,
-            SUM(carrier_ct) AS total_carrier_delays,
-            SUM(weather_ct) AS total_weather_delays,
-            SUM(nas_ct) AS total_nas_delays,
-            SUM(security_ct) AS total_security_delays,
-            SUM(late_aircraft_ct) AS total_late_aircraft_delays,
-            SUM(arr_delay) AS total_delay_minutes,
-            SUM(carrier_delay) AS total_carrier_delay_minutes,
-            SUM(weather_delay) AS total_weather_delay_minutes,
-            SUM(nas_delay) AS total_nas_delay_minutes,
-            SUM(security_delay) AS total_security_delay_minutes,
-            SUM(late_aircraft_delay) AS total_late_aircraft_delay_minutes
-        FROM delay_reasons
-        GROUP BY airport, airport_name
+            dr.airport_code,
+            a.airport_name,
+            SUM(dr.total_arrivals) AS total_flights,
+            SUM(dr.total_delays) AS total_delayed_flights,
+            SUM(dr.total_cancellations) AS total_cancelled_flights,
+            SUM(dr.total_diversions) AS total_diverted_flights,
+            SUM(dr.carrier_cause_delay) AS total_carrier_delays,
+            SUM(dr.weather_cause_delay) AS total_weather_delays,
+            SUM(dr.nas_cause_delay) AS total_nas_delays,
+            SUM(dr.security_cause_delay) AS total_security_delays,
+            SUM(dr.late_aircraft_cause_delay) AS total_late_aircraft_delays
+        FROM {{ ref('delay_reasons') }} dr
+        JOIN {{ ref('dim_airport') }} a ON dr.airport_code = a.airport_code
+        GROUP BY dr.airport_code, a.airport_name
     )
 
 SELECT
-    airport,
+    airport_code,
     airport_name,
     total_flights,
     total_delayed_flights,
@@ -36,10 +31,11 @@ SELECT
     total_nas_delays,
     total_security_delays,
     total_late_aircraft_delays,
-    total_delay_minutes,
-    total_carrier_delay_minutes,
-    total_weather_delay_minutes,
-    total_nas_delay_minutes,
-    total_security_delay_minutes,
-    total_late_aircraft_delay_minutes
+    (total_delayed_flights / NULLIF(total_flights, 0) * 100)::DECIMAL(5,2) AS delay_percentage,
+    (total_carrier_delays / NULLIF(total_delayed_flights, 0) * 100)::DECIMAL(5,2) AS carrier_delay_percentage,
+    (total_weather_delays / NULLIF(total_delayed_flights, 0) * 100)::DECIMAL(5,2) AS weather_delay_percentage,
+    (total_nas_delays / NULLIF(total_delayed_flights, 0) * 100)::DECIMAL(5,2) AS nas_delay_percentage,
+    (total_security_delays / NULLIF(total_delayed_flights, 0) * 100)::DECIMAL(5,2) AS security_delay_percentage,
+    (total_late_aircraft_delays / NULLIF(total_delayed_flights, 0) * 100)::DECIMAL(5,2) AS late_aircraft_delay_percentage
 FROM delay_report_data_by_airport
+ORDER BY total_delayed_flights DESC
