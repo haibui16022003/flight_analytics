@@ -31,6 +31,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   flight_analysis:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+    report:
+      +materialized: view # create view default for models in report folder
+      +tags: ["report"]

@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: rp_routes_by_delay
+    description: "Báo cáo độ trễ theo tuyến đường bay."
+    columns:
+      - name: origin_airport_name
+        description: "Tên sân bay khởi hành."
+      - name: destination_airport_name
+        description: "Tên sân bay điểm đến."
+      - name: total_flights
+        description: "Tổng số chuyến bay trên tuyến đường này."
+      - name: departure_delayed_flights
+        description: "Số chuyến bay bị trễ khi khởi hành."
+      - name: arrival_delayed_flights
+        description: "Số chuyến bay bị trễ khi đến nơi."
+      - name: departure_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi khởi hành (%)."
+      - name: arrival_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi đến nơi (%)."
+
+  - name: rp_monthly_delays
+    description: "Báo cáo độ trễ theo tháng."
+    columns:
+      - name: year
+        description: "Năm của báo cáo."
+      - name: month
+        description: "Tháng của báo cáo."
+      - name: total_flights
+        description: "Tổng số chuyến bay trong tháng."
+      - name: departure_delayed_flights
+        description: "Số chuyến bay bị trễ khi khởi hành."
+      - name: arrival_delayed_flights
+        description: "Số chuyến bay bị trễ khi đến nơi."
+      - name: departure_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi khởi hành (%)."
+      - name: arrival_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi đến nơi (%)."
+
+  - name: rp_carrier_delays
+    description: "Báo cáo thống kê số chuyến bay bị trễ theo hãng hàng không"
+    columns:
+      - name: carrier_code
+        description: "Mã hãng hàng không"
+      - name: carrier_name
+        description: "Tên hãng hàng không"
+      - name: total_flights
+        description: "Tổng số chuyến bay của hãng"
+      - name: departure_delayed_flights
+        description: "Số chuyến bay bị trễ khi khởi hành"
+      - name: arrival_delayed_flights
+        description: "Số chuyến bay bị trễ khi hạ cánh"
+      - name: departure_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi khởi hành (%)"
+      - name: arrival_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi hạ cánh (%)"
+
+  - name: rp_airport_delays
+    description: "Báo cáo độ trễ theo sân bay."
+    columns:
+      - name: airport_code
+        description: "Mã sân bay."
+      - name: airport_name
+        description: "Tên sân bay."
+      - name: total_flights
+        description: "Tổng số chuyến bay tại sân bay này."
+      - name: departure_delayed_flights
+        description: "Số chuyến bay bị trễ khi khởi hành."
+      - name: arrival_delayed_flights
+        description: "Số chuyến bay bị trễ khi đến nơi."
+      - name: departure_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi khởi hành (%)."
+      - name: arrival_delay_percentage
+        description: "Tỷ lệ chuyến bay bị trễ khi đến nơi (%)."
