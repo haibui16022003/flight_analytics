@@ -65,11 +65,17 @@ spark-submit --jars /opt/spark/jars/postgresql-42.2.23.jar "loader.py"
 - Spark Master UI: http://localhost:8080
 
 ### 5. Run dbt transformations
-
+Option 1: 
 ```bash
-docker exec -it dbt_service bash
-cd /dbt
-dbt run
+docker exec -it postgresql bash
+cd /opt/dbt/flight_analysis
+dbt build # If you want to run all models
+```
+Option 2:
+```bash
+docker exec -it postgresql bash
+cd /opt/dbt/flight_analysis
+dbt run model_name # If you want to run a specific model
 ```
 
 # Troubleshooting
