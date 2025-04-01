@@ -55,20 +55,38 @@ models:
       - name: arrival_delay_percentage
         description: "Tỷ lệ chuyến bay bị trễ khi hạ cánh (%)"
 
-  - name: rp_airport_delays
-    description: "Báo cáo độ trễ theo sân bay."
+  - name: rp_airport_departure_delays
+    description: "Báo cáo thống kê số chuyến bay bị trễ khi khởi hành theo sân bay"
     columns:
       - name: airport_code
-        description: "Mã sân bay."
+        description: "Mã sân bay"
       - name: airport_name
-        description: "Tên sân bay."
-      - name: total_flights
-        description: "Tổng số chuyến bay tại sân bay này."
-      - name: departure_delayed_flights
-        description: "Số chuyến bay bị trễ khi khởi hành."
-      - name: arrival_delayed_flights
-        description: "Số chuyến bay bị trễ khi đến nơi."
+        description: "Tên sân bay"
+      - name: city
+        description: "Thành phố nơi sân bay tọa lạc"
+      - name: country
+        description: "Quốc gia của sân bay"
+      - name: total_departures
+        description: "Tổng số chuyến bay khởi hành từ sân bay"
+      - name: delayed_departures
+        description: "Số chuyến bay bị trễ khi khởi hành"
       - name: departure_delay_percentage
-        description: "Tỷ lệ chuyến bay bị trễ khi khởi hành (%)."
+        description: "Tỷ lệ chuyến bay bị trễ khi khởi hành (%)"
+        
+  - name: rp_airport_arrival_delays
+    description: "Báo cáo thống kê số chuyến bay bị trễ khi hạ cánh theo sân bay"
+    columns:
+      - name: airport_code
+        description: "Mã sân bay"
+      - name: airport_name
+        description: "Tên sân bay"
+      - name: city
+        description: "Thành phố nơi sân bay tọa lạc"
+      - name: country
+        description: "Quốc gia của sân bay"
+      - name: total_arrivals
+        description: "Tổng số chuyến bay đến sân bay"
+      - name: delayed_arrivals
+        description: "Số chuyến bay bị trễ khi hạ cánh"
       - name: arrival_delay_percentage
-        description: "Tỷ lệ chuyến bay bị trễ khi đến nơi (%)."
+        description: "Tỷ lệ chuyến bay bị trễ khi hạ cánh (%)"
