@@ -25,5 +25,3 @@ ENV PATH="/opt/dbt_venv/bin:$PATH"
 
 # Switch back to non-root bitnami user
 USER 1001
-
-COPY profiles.yml /opt/profiles.yml
