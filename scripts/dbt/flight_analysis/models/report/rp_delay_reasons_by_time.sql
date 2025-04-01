@@ -14,7 +14,7 @@ WITH
             SUM(nas_cause_delay) AS total_nas_delays,
             SUM(security_cause_delay) AS total_security_delays,
             SUM(late_aircraft_cause_delay) AS total_late_aircraft_delays
-        FROM {{ ref('delay_reasons') }}
+        FROM public.delay_reasons
         GROUP BY year, month
     )
 
