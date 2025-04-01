@@ -2,7 +2,6 @@ from pyspark.sql.functions import col, to_date, concat_ws, sha2, date_format, li
 
 from normarlizer import load_csv
 
-
 def transform_flight_data(spark, flights_df):
     """Transform the flights data into dimensional model."""
 
@@ -34,13 +33,12 @@ def transform_flight_data(spark, flights_df):
 
         # Date format: yyyy-MM-dd
         df = df.withColumn("date", to_date(concat_ws("-", col("year"), col("month"), col("day")), "yyyy-M-d"))
-        df = df.withColumn("date_code", concat_ws("", col("year"), col("month"), col("day")).cast("int"))
+        df = df.withColumn("date_code", sha2(concat_ws("", col("year"), col("month"), col("day")), 256))
 
         # Add additional date dimensions
         df = df.withColumn("day_of_week", date_format(col("date"), "EEEE"))
         df = df.withColumn("day_of_month", col("day"))
         df = df.withColumn("day_of_year", date_format(col("date"), "D"))
-        # Updated pattern for week of year
         df = df.withColumn("month_name", date_format(col("date"), "MMMM"))
         df = df.withColumn("quarter", date_format(col("date"), "Q"))
         df = df.withColumn("is_weekend", when(dayofweek(col("date")).isin(1, 7), True).otherwise(False))
@@ -61,13 +59,11 @@ def transform_flight_data(spark, flights_df):
         return df
 
     def create_dim_time():
-        # Extract unique hour and minute combinations
         df = flights_df.select(
             col("hour"),
             col("minute")
         ).distinct()
 
-        # Create time-related fields
         df = df.withColumn("time_id", (col("hour") * 60 + col("minute")).cast("int"))
         df = df.withColumn("time_of_day",
                            when((col("hour") >= 5) & (col("hour") < 12), "Morning")
@@ -95,7 +91,7 @@ def transform_flight_data(spark, flights_df):
        df = flights_df.withColumn("route_key",
                                   sha2(concat_ws("", col("origin"), col("dest"), col("distance")), 256))
        df = df.withColumn("date_code",
-                          concat_ws("", col("year"), col("month"), col("day")).cast("int"))
+                          sha2(concat_ws("", col("year"), col("month"), col("day")), 256))
        df = df.withColumn("time_id", (col("hour") * 60 + col("minute")).cast("int"))
        df = df.withColumn("is_departure_delayed", when(col("dep_delay") > 15, True).otherwise(False))
        df = df.withColumn("is_arrival_delayed", when(col("arr_delay") > 15, True).otherwise(False))
@@ -113,7 +109,6 @@ def transform_flight_data(spark, flights_df):
        )
 
        return fact_df
-
 
     fact_flights = create_fact_flights()
 
