@@ -33,7 +33,12 @@ git clone https://github.com/haibui16022003/flight_analytics.git
 cd flight_analytics
 ```
 
-### 2. Start the Docker environment
+### 2. Add .env
+
+- change .env.example -> .env
+- add JDBC_PASSWORD
+
+### 3. Start the Docker environment
 
 ```bash
 docker-compose up -d
@@ -46,12 +51,12 @@ This command will start the PostgreSQL database, dbt, and Apache Spark services.
 - Spark master node: 'spark-master'
 - Spark worker node: 'spark-worker'
 
-### 3. Load the flight data
+### 4. Load the flight data
 
 All flight data files should be placed in the `data/` directory.
 (updating)
 
-### 4. Run Spark jobs
+### 5. Run Spark jobs
 
 ```bash
 docker exec -it spark-master bash
@@ -64,14 +69,18 @@ spark-submit --jars /opt/spark/jars/postgresql-42.2.23.jar "loader.py"
 - PostgreSQL: http://localhost:5432 (User: user, Password: password, Database: flights_dwh)
 - Spark Master UI: http://localhost:8080
 
-### 5. Run dbt transformations
-Option 1: 
+### 6. Run dbt transformations
+
+Option 1:
+
 ```bash
 docker exec -it postgresql bash
 cd /opt/dbt/flight_analysis
 dbt build # If you want to run all models
 ```
+
 Option 2:
+
 ```bash
 docker exec -it postgresql bash
 cd /opt/dbt/flight_analysis

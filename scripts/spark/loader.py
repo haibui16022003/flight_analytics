@@ -1,3 +1,4 @@
+import os
 from pyspark.sql import SparkSession
 
 from normarlizer import normalize_data, print_schema_info
@@ -6,9 +7,22 @@ from transformer import *
 
 POSTGRES_JAR = "/opt/spark/jars/postgresql-42.2.23.jar"
 
+# Get PostgreSQL connection info from environment variables
+JDBC_HOST = os.getenv("JDBC_HOST")
+JDBC_PORT = os.getenv("JDBC_PORT")
+JDBC_DB = os.getenv("JDBC_DB")
+JDBC_USER = os.getenv("JDBC_USER")
+JDBC_PASSWORD = os.getenv("JDBC_PASSWORD")
+
+JDBC_URL = f"jdbc:postgresql://{JDBC_HOST}:{JDBC_PORT}/{JDBC_DB}"
+DB_PROPERTIES = {
+    "user": JDBC_USER,
+    "password": JDBC_PASSWORD,
+    "driver": "org.postgresql.Driver"
+}
+
 
 def create_spark_session(app_name="Loader"):
-    """Create and return a SparkSession."""
     return SparkSession.builder \
         .appName(app_name) \
         .config("spark.jars", POSTGRES_JAR) \
@@ -16,7 +30,6 @@ def create_spark_session(app_name="Loader"):
 
 
 def load_flights_data(spark, flights_df):
-    """Load flights data into PostgreSQL."""
     dim_carrier, dim_airport, dim_date, dim_route, dim_time, fact_flights = transform_flight_data(spark, flights_df)
     tables = {
         "dim_carrier": dim_carrier,
@@ -27,26 +40,16 @@ def load_flights_data(spark, flights_df):
         "fact_flights": fact_flights
     }
 
-    # Postgre configuration
-    jdbc_url = "jdbc:postgresql://postgresql:5432/flights_dwh"
-    db_properties = {
-        "user": "user",
-        "password": "password",
-        "driver": "org.postgresql.Driver"
-    }
-
-    # Write data to PostgreSQL
     for table_name, df in tables.items():
         print(f"Loading {table_name} into PostgreSQL...")
-
         try:
             df.write \
                 .format("jdbc") \
-                .option("url", jdbc_url) \
+                .option("url", JDBC_URL) \
                 .option("dbtable", table_name) \
-                .option("user", db_properties["user"]) \
-                .option("password", db_properties["password"]) \
-                .option("driver", db_properties["driver"]) \
+                .option("user", DB_PROPERTIES["user"]) \
+                .option("password", DB_PROPERTIES["password"]) \
+                .option("driver", DB_PROPERTIES["driver"]) \
                 .mode("overwrite") \
                 .save()
             print(f"Successfully loaded {table_name}!")
@@ -55,20 +58,19 @@ def load_flights_data(spark, flights_df):
 
 
 def load_delays_data(spark, delays_df):
-    """Load delays data into PostgreSQL."""
     try:
         delays_df.write \
             .format("jdbc") \
-            .option("url", "jdbc:postgresql://postgresql:5432/flights_dwh") \
+            .option("url", JDBC_URL) \
             .option("dbtable", "delay_reasons") \
-            .option("user", "user") \
-            .option("password", "password") \
-            .option("driver", "org.postgresql.Driver") \
+            .option("user", DB_PROPERTIES["user"]) \
+            .option("password", DB_PROPERTIES["password"]) \
+            .option("driver", DB_PROPERTIES["driver"]) \
             .mode("overwrite") \
             .save()
         print("Successfully loaded delay_reasons!")
     except Exception as e:
-        print(f"Error loading delays_reasons: {e}")
+        print(f"Error loading delay_reasons: {e}")
 
 
 if __name__ == "__main__":
@@ -85,5 +87,4 @@ if __name__ == "__main__":
     print_schema_info(delays_df, show_sample=True)
     load_delays_data(spark, delays_df)
 
-    # Stop the SparkSession
     spark.stop()

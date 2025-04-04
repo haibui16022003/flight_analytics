@@ -3,10 +3,10 @@ flight_dbt:
   outputs:
     dev:
       type: postgres
-      host: postgresql
-      port: 5432
-      user: user
-      password: password
-      dbname: flights_dwh
+      host: "{{ env_var('JDBC_HOST') }}"
+      port: "{{ env_var('JDBC_PORT') | int }}"
+      user: "{{ env_var('POSTGRESQL_USER') }}"
+      password: "{{ env_var('POSTGRESQL_PASSWORD') }}"
+      dbname: "{{ env_var('POSTGRESQL_DATABASE') }}"
       schema: public
       threads: 4

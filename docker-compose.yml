@@ -6,18 +6,19 @@ services:
       dockerfile: Dockerfile
     container_name: postgresql
     environment:
-      - POSTGRESQL_USER=user
-      - POSTGRESQL_PASSWORD=password
-      - POSTGRESQL_DATABASE=flights_dwh
+      - JDBC_HOST=${JDBC_HOST}
+      - JDBC_PORT=${JDBC_PORT}
+      - POSTGRESQL_USER=${JDBC_USER}
+      - POSTGRESQL_PASSWORD=${JDBC_PASSWORD}
+      - POSTGRESQL_DATABASE=${JDBC_DB}
     ports:
-        - '5432:5432'
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./data:/data
       - ./scripts/dbt:/opt/dbt
     networks:
       - data-network
-
 
   # Spark master mode
   spark-master:
@@ -27,6 +28,11 @@ services:
     container_name: spark-master
     environment:
       - SPARK_MODE=master
+      - JDBC_HOST=${JDBC_HOST}
+      - JDBC_PORT=${JDBC_PORT}
+      - JDBC_DB=${JDBC_DB}
+      - JDBC_USER=${JDBC_USER}
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
     ports:
       - '8080:8080'
       - '7077:7077'

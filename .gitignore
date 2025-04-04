@@ -2,3 +2,4 @@
 logs/
 scripts/spark/__pycache__/
 .DS_Store
+.env
