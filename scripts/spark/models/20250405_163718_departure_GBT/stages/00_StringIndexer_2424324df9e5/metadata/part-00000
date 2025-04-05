@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.StringIndexerModel","timestamp":1743873268903,"sparkVersion":"3.5.5","uid":"StringIndexer_2424324df9e5","paramMap":{"outputCol":"carrier_code_idx","handleInvalid":"keep","inputCol":"carrier_code"},"defaultParamMap":{"outputCol":"StringIndexer_2424324df9e5__output","handleInvalid":"error","stringOrderType":"frequencyDesc"}}

@@ -1,9 +1,12 @@
 from pyspark.sql.functions import col, to_date, concat_ws, sha2, date_format, lit, when, dayofweek
 
-from normarlizer import load_csv
+from normarlizer import normalize_data, load_csv
+from df_schema import FLIGHTS_SCHEMA
 
-def transform_flight_data(spark, flights_df):
+def transform_flight_data(spark, flights_df = None):
     """Transform the flights data into dimensional model."""
+    if flights_df is None:
+        flights_df = normalize_data(spark, "flight_data.csv", FLIGHTS_SCHEMA)
 
     def create_dim_carrier():
         df = flights_df.select(
