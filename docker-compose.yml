@@ -46,10 +46,17 @@ services:
   # Spark worker mode
   spark-worker:
     image: 'bitnami/spark:latest'
-    container_name: spark-worker
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2                   # Cores per worker
+      - SPARK_WORKER_MEMORY=3g                 # Memory per worker
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 3g
     depends_on:
       - spark-master
     volumes:
